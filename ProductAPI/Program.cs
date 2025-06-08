@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 // Database
 builder.Services.AddDbContext<InventoryContext>(options =>
 {
-    var connectionString = $"Host=aws-0-ap-south-1.pooler.supabase.com;Port=6543;Database=postgres;Username=postgres.ulydouacivuvupzjwpkt;Password={db_pass};SSL Mode=Require;Trust Server Certificate=true;Timeout=30;CommandTimeout=60;";
+    var connectionString = $"Host=aws-0-ap-south-1.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.ulydouacivuvupzjwpkt;Password={db_pass};SSL Mode=Require;Trust Server Certificate=true;Timeout=30;CommandTimeout=60;";
     options.UseNpgsql(connectionString);
 });
 // Repository pattern
@@ -29,6 +29,11 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // Business logic services
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(80); // Listens on both IPv4 and IPv6
+});
+
 
 // CORS for Flutter app
 builder.Services.AddCors(options =>

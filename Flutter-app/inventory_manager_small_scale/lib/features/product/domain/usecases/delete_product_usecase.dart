@@ -1,16 +1,15 @@
-import '../entities/product_entity.dart';
 import '../repositories/product_repository.dart';
 import '../../../../core/usecases/usecase.dart';
 
-class DeleteProductUsecase extends UseCase<void, ProductEntity>
+class DeleteProductUsecase extends UseCase<void, int>
 {
   final ProductRepository repository;
 
   DeleteProductUsecase(this.repository);
 
   @override
-  Future<void> call(ProductEntity product) async
+  Future<void> call(int id) async
   {
-    return await repository.deleteProduct(product.id);
+    return await repository.deleteProduct(id);
   }
 }
