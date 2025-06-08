@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 // Database
 builder.Services.AddDbContext<InventoryContext>(options =>
 {
-    var connectionString = $"Host=aws-0-ap-south-1.pooler.supabase.com;Port=6543;Database=postgres;Username=postgres.ulydouacivuvupzjwpkt;Password={db_pass};SSL Mode=Require;Trust Server Certificate=true;Timeout=30;CommandTimeout=60;";
+    var connectionString = $"Host=aws-0-ap-south-1.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.ulydouacivuvupzjwpkt;Password={db_pass};SSL Mode=Require;Trust Server Certificate=true;Timeout=30;CommandTimeout=60;";
     options.UseNpgsql(connectionString);
 });
 // Repository pattern
