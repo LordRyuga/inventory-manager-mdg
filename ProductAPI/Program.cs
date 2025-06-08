@@ -29,6 +29,11 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // Business logic services
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(80); // Listens on both IPv4 and IPv6
+});
+
 
 // CORS for Flutter app
 builder.Services.AddCors(options =>

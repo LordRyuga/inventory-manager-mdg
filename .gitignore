@@ -4,6 +4,7 @@ obj/
 .env
 *.user
 *.suo
+out/
 
 .fake
 
