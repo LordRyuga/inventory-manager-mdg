@@ -34,7 +34,7 @@ class ProductRepositoryImpl implements ProductRepository
   Future<ProductEntity> getProductById(int id) async
   {
     final productModel = await remoteDataSource.getProduct(id);
-    return ProductModel.fromJson(productModel.toJson());
+    return productModel;
   }
 
   @override

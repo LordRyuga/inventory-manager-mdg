@@ -29,8 +29,6 @@ class DeleteProductEvent extends ProductEvent {
   DeleteProductEvent(this.id);
 }
 
-class GetCategoriesEvent extends ProductEvent {}
-
 class GetStatsEvent extends ProductEvent {}
 
 class GetProductsByCategoryEvent extends ProductEvent {

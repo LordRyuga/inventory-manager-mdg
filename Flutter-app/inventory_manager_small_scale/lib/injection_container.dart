@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:inventory_manager_small_scale/features/product/presentation/bloc/category_bloc.dart';
 import 'features/product/domain/usecases/get_all_products_usecase.dart';
 import 'features/product/domain/usecases/create_product_usecase.dart';
 import 'features/product/domain/usecases/delete_product_usecase.dart';
@@ -31,12 +32,13 @@ Future<void> init() async {
         createProduct: sl(),
         updateProduct: sl(),
         deleteProduct: sl(),
-        getCategories: sl(),
         getProductByStockStatus: sl(),
         getProductBySearch: sl(),
         getProductByCategory: sl(),
         getStats: sl(),
       ));
+
+  sl.registerFactory(() => CategoryBloc(getCategories: sl()));
 
   // Usecases
   sl.registerLazySingleton(() => GetAllProductsUsecase(sl()));

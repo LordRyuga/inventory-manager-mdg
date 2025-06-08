@@ -11,10 +11,7 @@ import 'add_edit_product_page.dart';
 class ProductDetailPage extends StatefulWidget {
   final int productId;
 
-  const ProductDetailPage({
-    super.key,
-    required this.productId,
-  });
+  const ProductDetailPage({super.key, required this.productId});
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -25,6 +22,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   void initState() {
+    print(_product);
     super.initState();
     context.read<ProductBloc>().add(GetProductByIdEvent(widget.productId));
   }
@@ -33,12 +31,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     AppUtils.showConfirmDialog(
       context: context,
       title: 'Delete Product',
-      content: 'Are you sure you want to delete "${_product?.name}"? This action cannot be undone.',
+      content:
+          'Are you sure you want to delete "${_product?.name}"? This action cannot be undone.',
       confirmText: 'Delete',
       cancelText: 'Cancel',
       isDangerous: true,
     ).then((confirmed) {
-      if (confirmed == true && _product != null) {
+      if (confirmed == true && _product != null && mounted) {
         context.read<ProductBloc>().add(DeleteProductEvent(_product!.id));
       }
     });
@@ -46,16 +45,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   void _editProduct() {
     if (_product != null) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => AddEditProductPage(product: _product),
-        ),
-      ).then((result) {
-        if (result == true) {
-          // Refresh product data after edit
-          context.read<ProductBloc>().add(GetProductByIdEvent(widget.productId));
-        }
-      });
+      Navigator.of(context)
+          .push(
+            MaterialPageRoute(
+              builder: (context) => AddEditProductPage(product: _product),
+            ),
+          )
+          .then((result) {
+            if (result == true && mounted) {
+              // Refresh product data after edit
+              context.read<ProductBloc>().add(
+                GetProductByIdEvent(widget.productId),
+              );
+            }
+          });
     }
   }
 
@@ -74,7 +77,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         borderRadius: BorderRadius.circular(AppStyles.radiusMD),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: const Color.from(
+              alpha: 0.102,
+              red: 0.62,
+              green: 0.62,
+              blue: 0.62,
+            ),
             spreadRadius: 1,
             blurRadius: 4,
             offset: const Offset(0, 2),
@@ -86,14 +94,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           Container(
             padding: const EdgeInsets.all(AppStyles.spacingSM),
             decoration: BoxDecoration(
-              color: AppStyles.primaryColor.withOpacity(0.1),
+              color: const Color.from(
+                alpha: 0.1,
+                red: 0.129,
+                green: 0.588,
+                blue: 0.953,
+              ),
               borderRadius: BorderRadius.circular(AppStyles.radiusSM),
             ),
-            child: Icon(
-              icon,
-              color: AppStyles.primaryColor,
-              size: 24,
-            ),
+            child: Icon(icon, color: AppStyles.primaryColor, size: 24),
           ),
           const SizedBox(width: AppStyles.spacingMD),
           Expanded(
@@ -133,9 +142,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: Color.from(
+          alpha: 0.1,
+          red: color.r,
+          green: color.g,
+          blue: color.b,
+        ),
         borderRadius: BorderRadius.circular(AppStyles.radiusSM),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(
+          color: Color.from(
+            alpha: 0.3,
+            red: color.r,
+            green: color.g,
+            blue: color.b,
+          ),
+        ),
       ),
       child: Text(
         status,
@@ -154,7 +175,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: const Color.from(
+              alpha: 0.1,
+              red: 0.62,
+              green: 0.62,
+              blue: 0.62,
+            ),
             spreadRadius: 1,
             blurRadius: 4,
             offset: const Offset(0, -2),
@@ -171,7 +197,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppStyles.primaryColor,
                 side: BorderSide(color: AppStyles.primaryColor),
-                padding: const EdgeInsets.symmetric(vertical: AppStyles.spacingMD),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppStyles.spacingMD,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppStyles.radiusMD),
                 ),
@@ -187,7 +215,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppStyles.errorColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: AppStyles.spacingMD),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppStyles.spacingMD,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppStyles.radiusMD),
                 ),
@@ -211,7 +241,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           end: Alignment.bottomRight,
           colors: [
             AppStyles.primaryColor,
-            AppStyles.primaryColor.withOpacity(0.8),
+            const Color.from(alpha: 0.8, red: 0.129, green: 0.588, blue: 0.953),
           ],
         ),
       ),
@@ -239,7 +269,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: const Color.fromRGBO(255, 255, 255, 0.2),
                         borderRadius: BorderRadius.circular(AppStyles.radiusSM),
                       ),
                       child: Text(
@@ -318,13 +348,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
           if (state is ProductSuccess) {
-            AppUtils.showSuccessSnackBar(context, 'Product deleted successfully');
+            AppUtils.showSuccessSnackBar(
+              context,
+              'Product deleted successfully',
+            );
             Navigator.of(context).pop(true);
           } else if (state is ProductError) {
             AppUtils.showErrorSnackBar(context, state.message);
-          } else if (state is ProductLoaded && state.products.isNotEmpty) {
+          } else if (state is ProductDetailLoaded) {
             setState(() {
-              _product = state.products.first;
+              _product = state.product;
             });
           }
         },
@@ -338,7 +371,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               subtitle: state.message,
               action: ElevatedButton(
                 onPressed: () {
-                  context.read<ProductBloc>().add(GetProductByIdEvent(widget.productId));
+                  context.read<ProductBloc>().add(
+                    GetProductByIdEvent(widget.productId),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppStyles.primaryColor,
@@ -347,20 +382,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 child: const Text('Retry'),
               ),
             );
-          } else if (_product == null) {
-            return EmptyStateWidget(
-              icon: Icons.inventory_2_outlined,
-              title: 'Product Not Found',
-              subtitle: 'The requested product could not be found.',
-              action: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppStyles.primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Go Back'),
-              ),
-            );
+          } else if (state is ProductDetailLoaded) {
+            if (_product == null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  _product = state.product;
+                });
+              });
+            }
+          }
+
+          if (_product == null) {
+            return const LoadingWidget(message: 'Loading product details...');
           }
 
           return Column(
@@ -395,7 +428,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       _buildDetailCard(
                         icon: Icons.currency_rupee,
                         title: 'Price',
-                        value: AppUtils.formatCurrency(_product!.price, symbol: '₹'),
+                        value: AppUtils.formatCurrency(
+                          _product!.price,
+                          symbol: '₹',
+                        ),
                         valueColor: AppStyles.successColor,
                       ),
 
@@ -403,14 +439,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         icon: Icons.inventory_outlined,
                         title: 'Quantity',
                         value: '${_product!.quantity} units',
-                        valueColor: AppUtils.getStockStatusColor(_product!.quantity),
+                        valueColor: AppUtils.getStockStatusColor(
+                          _product!.quantity,
+                        ),
                         trailing: _buildStockStatusChip(_product!.quantity),
                       ),
 
                       _buildDetailCard(
                         icon: Icons.calculate_outlined,
                         title: 'Total Value',
-                        value: AppUtils.formatCurrency(_product!.price * _product!.quantity, symbol: '₹'),
+                        value: AppUtils.formatCurrency(
+                          _product!.price * _product!.quantity,
+                          symbol: '₹',
+                        ),
                         valueColor: AppStyles.primaryColor,
                       ),
 
@@ -429,13 +470,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         children: [
                           Expanded(
                             child: Container(
-                              padding: const EdgeInsets.all(AppStyles.spacingMD),
+                              padding: const EdgeInsets.all(
+                                AppStyles.spacingMD,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(AppStyles.radiusMD),
+                                borderRadius: BorderRadius.circular(
+                                  AppStyles.radiusMD,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
+                                    color: const Color.fromRGBO(
+                                      158,
+                                      158,
+                                      158,
+                                      0.1,
+                                    ),
                                     spreadRadius: 1,
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
@@ -460,7 +510,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   Text(
                                     AppUtils.getStockStatus(_product!.quantity),
                                     style: AppStyles.labelLarge.copyWith(
-                                      color: AppUtils.getStockStatusColor(_product!.quantity),
+                                      color: AppUtils.getStockStatusColor(
+                                        _product!.quantity,
+                                      ),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -471,13 +523,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           const SizedBox(width: AppStyles.spacingMD),
                           Expanded(
                             child: Container(
-                              padding: const EdgeInsets.all(AppStyles.spacingMD),
+                              padding: const EdgeInsets.all(
+                                AppStyles.spacingMD,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(AppStyles.radiusMD),
+                                borderRadius: BorderRadius.circular(
+                                  AppStyles.radiusMD,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
+                                    color: const Color.fromRGBO(
+                                      158,
+                                      158,
+                                      158,
+                                      0.1,
+                                    ),
                                     spreadRadius: 1,
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
@@ -500,7 +561,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    AppUtils.formatCurrency(_product!.price, symbol: '₹'),
+                                    AppUtils.formatCurrency(
+                                      _product!.price,
+                                      symbol: '₹',
+                                    ),
                                     style: AppStyles.labelLarge.copyWith(
                                       color: AppStyles.primaryColor,
                                       fontWeight: FontWeight.w600,

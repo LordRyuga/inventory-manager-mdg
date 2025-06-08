@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory_manager_small_scale/features/product/presentation/bloc/category_bloc.dart';
 import 'injection_container.dart' as di;
 import 'features/product/presentation/bloc/product_bloc.dart';
 import 'features/product/presentation/pages/product_list_page.dart';
@@ -18,6 +19,9 @@ class InventoryApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<CategoryBloc>(
+          create: (_) => di.sl<CategoryBloc>(),
+        ),
         BlocProvider<ProductBloc>(
           create: (_) => di.sl<ProductBloc>(),
         ),

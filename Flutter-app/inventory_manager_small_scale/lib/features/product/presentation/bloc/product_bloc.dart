@@ -5,7 +5,6 @@ import '../../domain/entities/product_entity.dart';
 // importin usecases
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/get_product_by_id_usecase.dart';
-import '../../domain/usecases/get_categories_usecase.dart';
 import '../../domain/usecases/create_product_usecase.dart';
 import '../../domain/usecases/get_all_products_usecase.dart';
 import '../../domain/usecases/update_product_usecase.dart';
@@ -24,7 +23,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final CreateProductUsecase createProduct;
   final UpdateProductUsecase updateProduct;
   final DeleteProductUsecase deleteProduct;
-  final GetCategoriesUseCase getCategories;
   final GetProductByStockStatus getProductByStockStatus;
   final GetProductBySearch getProductBySearch;
   final GetProductByCategory getProductByCategory;
@@ -36,7 +34,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     required this.createProduct,
     required this.updateProduct,
     required this.deleteProduct,
-    required this.getCategories,
     required this.getProductByStockStatus,
     required this.getProductBySearch,
     required this.getProductByCategory,
@@ -56,8 +53,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductLoading());
       try {
         final product = await getProductById.call(event.id);
+        print("-------------This is product-------------");
+        print(product.category);
         emit(ProductDetailLoaded(product));
       } catch (e) {
+        print("-------------This error in product event-------------");
         emit(ProductError(e.toString()));
       }
     });
@@ -87,16 +87,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       try {
         await deleteProduct.call(event.id);
         emit(ProductSuccess());
-      } catch (e) {
-        emit(ProductError(e.toString()));
-      }
-    });
-
-    on<GetCategoriesEvent>((event, emit) async {
-      emit(ProductLoading());
-      try {
-        final categories = await getCategories.call(NoParams());
-        emit(CategoriesLoaded(categories));
       } catch (e) {
         emit(ProductError(e.toString()));
       }

@@ -8,6 +8,7 @@ import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/styles/app_styles.dart';
 import 'add_edit_product_page.dart';
 import 'product_detail_page.dart';
+import '../bloc/category_bloc.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -25,8 +26,17 @@ class _ProductListPageState extends State<ProductListPage> {
   void initState() {
     super.initState();
     context.read<ProductBloc>().add(GetAllProductsEvent());
-    context.read<ProductBloc>().add(GetCategoriesEvent());
+    context.read<CategoryBloc>().add(GetCategoriesEvent());
   }
+
+  void _resetFiltersAndRefresh() {
+  setState(() {
+    _searchQuery = '';
+    _selectedCategory = 'All';
+    _selectedStockFilter = 'All';
+  });
+  context.read<ProductBloc>().add(GetAllProductsEvent());
+}
 
   void _showDeleteConfirmation(BuildContext context, int productId, String productName) {
     showDialog(
@@ -96,7 +106,7 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
           
           // Filter Chips
-          BlocBuilder<ProductBloc, ProductState>(
+          BlocBuilder<CategoryBloc, CategoryState>(
             builder: (context, state) {
               if (state is CategoriesLoaded) {
                 return Container(
@@ -184,7 +194,7 @@ class _ProductListPageState extends State<ProductListPage> {
                     ),
                   );
                   context.read<ProductBloc>().add(GetAllProductsEvent());
-                  context.read<ProductBloc>().add(GetCategoriesEvent());
+                  context.read<CategoryBloc>().add(GetCategoriesEvent());
                 } else if (state is ProductError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -206,12 +216,17 @@ class _ProductListPageState extends State<ProductListPage> {
                           ? 'Try adjusting your search or filters'
                           : 'Add your first product to get started',
                       action: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const AddEditProductPage(),
                             ),
                           );
+
+                          if(result == null)
+                          {
+                            _resetFiltersAndRefresh();
+                          }
                         },
                         icon: const Icon(Icons.add),
                         label: const Text('Add Product'),
@@ -234,12 +249,17 @@ class _ProductListPageState extends State<ProductListPage> {
                         final product = state.products[index];
                         return ProductCard(
                           product: product,
-                          onTap: () {
-                            Navigator.of(context).push(
+                          onTap: () async {
+                            final result = await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => ProductDetailPage(productId: product.id),
                               ),
                             );
+
+                            if(result == null)
+                            {
+                              _resetFiltersAndRefresh();
+                            }
                           },
                           onEdit: () {
                             Navigator.of(context).push(
@@ -275,12 +295,17 @@ class _ProductListPageState extends State<ProductListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
+        onPressed: () async {
+          final result = await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => const AddEditProductPage(),
             ),
           );
+
+          if(result == null)
+          {
+            _resetFiltersAndRefresh();           
+          }
         },
         backgroundColor: AppStyles.primaryColor,
         child: const Icon(Icons.add, color: Colors.white),

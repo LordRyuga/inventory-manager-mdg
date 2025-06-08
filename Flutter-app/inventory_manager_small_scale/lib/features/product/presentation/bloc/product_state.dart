@@ -15,11 +15,6 @@ class ProductDetailLoaded extends ProductState {
   ProductDetailLoaded(this.product);
 }
 
-class CategoriesLoaded extends ProductState {
-  final List<String> categories;
-  CategoriesLoaded(this.categories);
-}
-
 class StatsLoaded extends ProductState {
   final Map<String, dynamic> stats;
   StatsLoaded(this.stats);
