@@ -55,5 +55,6 @@ app.UseCors("AllowFlutter");
 app.UseAuthorization();
 app.MapControllers();
 
+app.Urls.Add("http://0.0.0.0:80");
 
 app.Run();
